@@ -1,0 +1,4 @@
+.env
+commands.sh
+/venv
+test_ws.py
