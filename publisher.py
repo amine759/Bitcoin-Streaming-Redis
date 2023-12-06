@@ -9,12 +9,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 redis_host = os.environ.get("redis_host")
-channel1 = os.environ.get("channel_stream1")
-channel2 = os.environ.get("channel_stream2")
+channel = os.environ.get("channel")
 redis_port = os.environ.get("redis_port")
 
-stream1 = "wss://stream.binance.com:9443/ws/btcusdt@kline_1s"  # streaming in 1s mode -> metrics : n trades per seconds, Event time
-stream2 = "wss://stream.binance.com:9443/ws/btcusdt@trade"  # streaming in trade mode -> metrics : btc price , event time
+stream = "wss://stream.binance.com:9443/ws/btcusdt@kline_1s"  # streaming in 1s mode -> metrics : n trades per seconds, Event time, btc close price
 """
 Data stored in time series in redis --> then connected to grafana
 """
@@ -36,26 +34,11 @@ async def publish_to_redis(stream, channel):
                 data = json.loads(msg)
                 event_time = unix_to_time(data.get("E"))  # Event timestamp
 
-                # Example data points to store in Redis
-                if channel == channel1:
-                    n_trades = data.get("k").get("n")  # Number of transactions
-                    data = json.dumps({"event_time": event_time,"n_trades": n_trades})
-                    r.set(channel2,data)
-                    print("published : ",data)
-
-                elif channel == channel2:
-                    btc_price = data.get("p")  # Bitcoin price
-                    data = json.dumps({"event_time": event_time,"bitcoin_price": btc_price})
-                    r.set(channel2,data)
-                    print("published : ",data)
-
-async def main():
-    # Run coroutines to publish to Redis channels
-    await asyncio.gather(
-        publish_to_redis(stream1, channel1), publish_to_redis(stream2, channel2)
-    )
-
+                n_trades = data.get("k").get("n")
+                close_price = data.get("k").get("c")
+                data = json.dumps({"event_time": event_time,"n_trades": n_trades,'close_price': close_price})
+                r.publish(channel,data)
+                print("published : ",data)
 
 if __name__ == "__main__":
-    asyncio.run(main())
-
+    asyncio.run(publish_to_redis(stream, channel))
