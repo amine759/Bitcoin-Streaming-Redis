@@ -23,7 +23,7 @@ async def subscribe_to_channel(channel):
         if message['type'] == 'message':
             message_data = message["data"].decode("utf-8")
             process_queue(message_data)
-            data_from_queue = get_data_from_queue()
+            data_from_queue = get_data_from_queue(r)
             
             if data_from_queue:
                 print("Retrieved data from the queue:", data_from_queue)
@@ -33,7 +33,7 @@ async def subscribe_to_channel(channel):
 def process_queue(data):
     r.rpush('queue', json.dumps(data))
 
-def get_data_from_queue():
+def get_data_from_queue(r):
     # Retrieve and remove the left-most element from the queue
     data = r.lpop('queue')
     if data:

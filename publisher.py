@@ -13,9 +13,7 @@ channel = os.environ.get("channel")
 redis_port = os.environ.get("redis_port")
 
 stream = "wss://stream.binance.com:9443/ws/btcusdt@kline_1s"  # streaming in 1s mode -> metrics : n trades per seconds, Event time, btc close price
-"""
-Data stored in time series in redis --> then connected to grafana
-"""
+
 
 r = redis.StrictRedis(host=redis_host, port=redis_port, decode_responses=True)
 
@@ -30,9 +28,9 @@ async def publish_to_redis(stream, channel):
     async with websockets.connect(stream) as ws:
             while True:
                 msg = await ws.recv()
-                # Assuming the received message is JSON
+
                 data = json.loads(msg)
-                event_time = unix_to_time(data.get("E"))  # Event timestamp
+                event_time = unix_to_time(data.get("E"))
 
                 n_trades = data.get("k").get("n")
                 close_price = data.get("k").get("c")

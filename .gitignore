@@ -2,3 +2,5 @@
 commands.sh
 /venv
 test_ws.py
+/__pycache__
+bash.sh
