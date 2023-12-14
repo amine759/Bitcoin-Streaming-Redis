@@ -1,0 +1,25 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches:
+      - main # Change this to the branch you want to trigger the workflow
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and tag Docker image
+        run: |
+          docker build -t bitcoin-stream-redis .
+          docker tag bitcoin-stream-redis krizalid69/bitcoin-stream-redis:latest
+
+      - name: Push Docker image to Docker Hub
+        run: docker push krizalid69/bitcoin-stream-redis:latest
