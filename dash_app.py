@@ -54,7 +54,7 @@ def dequeue():
 )
 def update_graph_live(n_intervals, n_clicks):
     global default_close_price_fig, default_n_trades_fig
-    
+
     if n_clicks is not None and n_clicks > 0:
         data_from_queue = dequeue()
         if data_from_queue:

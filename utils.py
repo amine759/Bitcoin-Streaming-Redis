@@ -14,6 +14,7 @@ def redis_connect():
     # Redis connection setup
     return redis.StrictRedis(host=redis_host, port=redis_port), channel
 
+
 def generate_default_graphs():
     # Generating default values
     now = datetime.now()
