@@ -16,5 +16,5 @@ COPY . /app/
 # Expose the port that your app runs on
 EXPOSE 8050
 
-# Command to run the application
-CMD ["python3", "dash_app.py"]
+# Create a startup script that runs the publisher, subscriber, and Dash app
+CMD ["bash", "-c", "python3 publisher.py & python3 subscriber.py & python3 dash_app.py"]
