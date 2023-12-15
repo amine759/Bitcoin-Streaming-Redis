@@ -104,4 +104,4 @@ def update_graph_live(n_intervals, n_clicks):
 
 if __name__ == "__main__":
     # Run the Dash app
-    app.run_server(debug=True)
+    app.run_server(debug=True, host="0.0.0.0", port=8080)

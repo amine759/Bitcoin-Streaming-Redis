@@ -9,13 +9,10 @@ COPY requirements.txt /app/
 COPY .env /app/
 
 # Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 # Copy the current directory contents into the container at /app
 COPY . /app/
 
-# Expose the port that your app runs on
-EXPOSE 8050
-
 # Create a startup script that runs the publisher, subscriber, and Dash app
-CMD ["bash", "-c", "python3 publisher.py & python3 subscriber.py & python3 dash_app.py"]
+CMD ["bash", "-c", "python3 dash_app.py & python3 publisher.py & python3 subscriber.py"]
